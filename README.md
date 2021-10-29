@@ -1,1 +1,1 @@
-# applied_bioinformatics
+# Code for project in applied bioinformatics
