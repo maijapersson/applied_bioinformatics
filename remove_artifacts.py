@@ -20,24 +20,6 @@ def create_bed_from_array(array):
     dataframe = pd.DataFrame(np_array)
     print()
     return pybedtools.BedTool.from_dataframe(dataframe)
-    # if len(arr) % 2 == 0:
-    #     h,t=1,-1;
-    #     arr_noHead_noTail=arr[slice(h,t)] #Remove first and last value
-    # else:
-    #     arr_noHead_noTail=arr[:-1] #Remove last value
-
-    # df_arr=pd.DataFrame(arr) #Convert to df
-    #
-    # if len(dataframe)>0:
-    #
-    #     start=df_arr.loc[::2, :] #Extract start values
-    #     stop=df_arr.loc[1::2, :] #Extract stop values
-    #     start.insert(1, "stop", stop) #Merge start & stop
-    #     start.insert(loc=0, column='chrom', value="PA_chr01")
-    #     #start=start.rename(index=lambda s: "PA_chr01") #Hardcoded row name for testing...
-    #     #start.to_csv(name+".bed", header=False,sep='\t') #create bed file
-    #     #bedfile=pybedtools.BedTool(name+".bed")
-
 
 #Removes exact matches from an array
 def remove_artifacts_exact(reference, individual):
@@ -112,7 +94,3 @@ def roc_curve(avg_coverage, pred_array, true_del_bed, coverage_array, ref_arr):
     plt.plot(1-np.array(spec_arr), sens_arr)
     #plt.plot(threshold, acc_arr)
     plt.show()
-
-
-
-arr=[12320, 16475, 289420, 290640, 363280, 365350, 434810, 442620, 520990, 527215, 735955, 745230, 854485, 860590, 932730, 935905]
