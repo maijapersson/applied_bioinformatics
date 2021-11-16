@@ -22,8 +22,10 @@ def calc_acc_sens_spec(pred_bkps_bed, true_bkps_bed):
    # pred_bkps_bed = pybedtools.BedTool(pred_bed)
    # true_bkps_bed = pybedtools.BedTool(true_bed)
 
+
    true_pos_bed= pred_bkps_bed.intersect(true_bkps_bed)
    false_pos_bed=pred_bkps_bed.subtract(true_bkps_bed)
+
 
    true_pos_arr=[]
    false_pos_arr=[]

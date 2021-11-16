@@ -11,12 +11,11 @@ import matplotlib.pyplot as plt
 #Creates a bed file from an array
 def create_bed_from_array(array):
 
-
-
-
     data_array = []
+    if len(array) % 2 != 0:
+        array=array[:-1] #Remove last value
     for i in range(0, len(array), 2):
-        data_array.append(["PA_Chr01", array[i],array[i+1]])
+        data_array.append(["PA_chr01", array[i],array[i+1]])
     np_array = np.array(data_array)
     dataframe = pd.DataFrame(np_array)
     print()
@@ -65,7 +64,7 @@ def bed_to_array(bed, size):
 def pred_breakpoints(ref_arr, ind_arr):
     ind=create_bed_from_array(ind_arr)
     ref=create_bed_from_array(ref_arr)
-    remove_artifacts_window( ref,ind).saveas("removed_artifacts_pred.bed")
+    remove_artifacts_window(ref,ind).saveas("removed_artifacts_pred.bed")
     return bed_to_array("removed_artifacts_pred.bed", 1000000)
 
 
@@ -88,18 +87,17 @@ def filter_coverage(pred_array, threshold, coverage_array):
 
 def roc_curve(avg_coverage, pred_array, true_del_bed, coverage_array, ref_arr):
 
-    threshold = np.linspace(0, 0.2*avg_coverage,20)
+    threshold = np.linspace(0, 0.2*avg_coverage,50)
     acc_arr = []
     spec_arr = []
     sens_arr = []
     for thr in threshold:
         filter_arr=filter_coverage(pred_array, thr, coverage_array) #Filter some threshold
 
-        # pred_bkps=pred_breakpoints(ref_arr, filter_arr) #remove artifacts
-
         pred_filtred_bed=create_bed_from_array(filter_arr) #create bed file
-
-        accuracy, sensitivity, specificity  = calc_acc_sens_spec(pred_filtred_bed, true_del_bed)
+        ref_bed=create_bed_from_array(ref_arr)
+        rem_pred_filter=remove_artifacts_window(ref_bed,pred_filtred_bed)
+        accuracy, sensitivity, specificity  = calc_acc_sens_spec(rem_pred_filter, true_del_bed)
         acc_arr.append(accuracy)
         spec_arr.append(specificity)
         sens_arr.append(sensitivity)

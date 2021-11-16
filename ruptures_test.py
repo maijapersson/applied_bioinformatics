@@ -10,7 +10,8 @@ import ruptures as rpt
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from remove_artifacts import roc_curve
+from remove_artifacts import roc_curve, create_bed_from_array
+from benchmarking import calc_acc_sens_spec
 
 
 #x100_covergae = pd.read_csv('/Users/linnbeckman/OneDrive/Uppsala Universitet_OneDrive/project_bioinf/Simulated_data/100X.coverage',header=None, sep='\t')
@@ -25,18 +26,18 @@ ref=np.array(x100_cov_1mil[2])
 true_bkps_bed = pybedtools.BedTool("1mil_C.bed")
 #
 # plt.figure(1)
-# model = "l2"  # "l1", "rbf", "linear", "normal", "ar"
-# algo = rpt.BottomUp(model=model, min_size=100).fit(ind5)
-# ind5_bkps = algo.predict(pen=7000000)
+model = "l2"  # "l1", "rbf", "linear", "normal", "ar"
+algo = rpt.BottomUp(model=model, min_size=100).fit(ind5)
+ind5_bkps = algo.predict(pen=7000000)
 # # rpt.show.display(ind5, ind5_bkps, figsize=(100, 3))
 # # plt.title('Change Point Detection: Bottom Up Search Method')
 # # plt.show()
 # print(ind5_bkps)
 #
 # plt.figure(2)
-# model = "l2"  # "l1", "rbf", "linear", "normal", "ar"
-# algo = rpt.BottomUp(model=model, min_size=100).fit(ref)
-# ref_bkps = algo.predict(pen=7000000)
+model = "l2"  # "l1", "rbf", "linear", "normal", "ar"
+algo = rpt.BottomUp(model=model, min_size=100).fit(ref)
+ref_bkps = algo.predict(pen=7000000)
 # print(ref_bkps)
 # # rpt.show.display(ref, ref_bkps, figsize=(100, 3))
 # # plt.title('Change Point Detection: Bottom Up Search Method')
@@ -53,17 +54,15 @@ true_bkps_bed = pybedtools.BedTool("1mil_C.bed")
 # plt.title('Change Point Detection: Bottom Up Search Method')
 # plt.show()
 
-
-ind5_bkps=[12320, 16475, 289420, 290640, 363280, 365350, 434810, 442620, 520990, 527215, 735955, 745230, 854485, 860590, 932730, 935905]
-ref_bkps=[510735, 515010, 1000000]
+#
+# ind5_bkps=[12320, 16475, 289420, 290640, 363280, 365350, 434810, 442620, 520990, 527215, 735955, 745230, 854485, 860590, 932730, 935905]
+# ref_bkps=[510735, 515010]
 roc_curve(100, ind5_bkps, true_bkps_bed, ind5, ref_bkps)
-plt.show()
+#plt.show()
 
+pred_bed=create_bed_from_array(ind5_bkps)
 
-
-threshold= 5
-avg_cov_arr=[]
-pred_filterd=[]
+print(calc_acc_sens_spec(pred_bed, true_bkps_bed))
 # for i in range(len(ind5_bkps)-1):
 #     start=ind5_bkps[i]
 #     stop=ind5_bkps[i+1]
