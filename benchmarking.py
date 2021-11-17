@@ -83,7 +83,7 @@ def over_estimated_sites(true_del, false_pos):
         if fractions[k]==0:
             plt.scatter(real_del[k], fractions[k], c="g", label=my_labels["x1"])
             my_labels["x1"] = "_nolegend_"
-        elif fractions[k]==1:
+        elif fractions[k]==100:
             plt.scatter(real_del[k], fractions[k], c="r", label=my_labels["x2"])
             my_labels["x2"] = "_nolegend_"
         else:
@@ -119,7 +119,7 @@ def under_estimated_sites(true_del, true_pos):
     my_labels = {"x1" : "Completly missed", "x2" : "Nothing missed", "x3":"Partly missed"}
 
     for k in range(len(fractions)-1):
-        if fractions[k]==1:
+        if fractions[k]==100:
             plt.scatter(real_del[k], fractions[k], c="r", label=my_labels["x1"])
             my_labels["x1"] = "_nolegend_"
         elif fractions[k]==0:
