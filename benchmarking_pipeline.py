@@ -28,15 +28,19 @@ true_bkps_bed = pybedtools.BedTool("1mil_C.bed")
 model = "l2"  # "l1", "rbf", "linear", "normal", "ar"
 min_size=50 #Minimum size between the deletions
 
-#Fit the data
+#Fit the data - uncommet this to try differnt models
 # algo = rpt.BottomUp(model=model, min_size=min_size).fit(individual)
 # algo_ref = rpt.BottomUp(model=model, min_size=min_size).fit(reference)
 
 #Predict the breakpoints for the individual and reference
-# ind_bkps = algo.predict(pen=2000000)
+# ind_bkps = algo.predict(pen=2000000) - uncommet this to try differnt models
+
+#For timesaving a pre defined array is used
 ind_bkps=[12320, 16415, 45830, 46935, 190425, 191035, 289420, 290640, 363215, 365350, 434745, 442560, 510735, 515010, 520990, 527215, 735955, 745230, 854485, 860650, 884760, 886285, 932730, 935845, 1000000]
 # #
-# ref_bkps = algo_ref.predict(pen=2000000)
+# ref_bkps = algo_ref.predict(pen=2000000) - uncommet this to try differnt models
+
+#For timesaving a pre defined array is used 
 ref_bkps=[510735, 515010, 1000000]
 
 #ROC curve with different filters
