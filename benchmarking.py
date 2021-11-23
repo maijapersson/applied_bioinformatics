@@ -18,7 +18,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from remove_artifacts import pred_breakpoints
 
-def calc_acc_sens_spec(pred_bkps_bed, true_bkps_bed, length):
+def calc_acc_sens_spec(pred_bkps_bed, true_bkps_bed, lenght):
    # Compare 2 bed-files or two arrays or matrices
    # pred_bed is from our script
    # true_bed is bed-file with true deletions
@@ -43,7 +43,6 @@ def calc_acc_sens_spec(pred_bkps_bed, true_bkps_bed, length):
 
    # True positives
    true_pos = sum(true_pos_arr)
-
    # False positives
    false_pos =  sum(false_pos_arr)
    # False negative
@@ -122,6 +121,7 @@ def under_estimated_sites(true_del, true_pos):
         if fractions[k]==100:
             plt.scatter(real_del[k], fractions[k], c="r", label=my_labels["x1"])
             my_labels["x1"] = "_nolegend_"
+            print(":()")
         elif fractions[k]==0:
             plt.scatter(real_del[k], fractions[k], c="g", label=my_labels["x2"])
             my_labels["x2"] = "_nolegend_"
@@ -139,7 +139,7 @@ def under_estimated_sites(true_del, true_pos):
 
 def roc_curve(avg_coverage, pred_array, true_del_bed, coverage_array, ref_arr, lenght):
 
-    threshold = np.linspace(0, 0.1*avg_coverage,70)
+    threshold = np.linspace(0, 0.5*avg_coverage,70)
     acc_arr = []
     spec_arr = []
     sens_arr = []
@@ -155,12 +155,12 @@ def roc_curve(avg_coverage, pred_array, true_del_bed, coverage_array, ref_arr, l
         spec_arr.append(specificity)
         sens_arr.append(sensitivity)
 
-    print("Sensitivity: ")
-    print(sens_arr)
-    print("specificity")
-    print(spec_arr)
-    print("accuracy")
-    print(acc_arr)
+    # print("Sensitivity: ")
+    # print(sens_arr)
+    # print("specificity")
+    # print(spec_arr)
+    # print("accuracy")
+    # print(acc_arr)
     plt.figure(1)
     fpr=1-np.array(spec_arr)
     plt.plot(fpr, sens_arr)
