@@ -30,17 +30,19 @@ def remove_artifacts_exact(reference, individual):
 def remove_artifacts_window(ref_bed, ind_bed):
     ind5_bkps_bed = pybedtools.BedTool(ind_bed)
     ref_bkps_bed = pybedtools.BedTool(ref_bed)
-    return ind5_bkps_bed.window(ref_bkps_bed, w=1000, v=True)
+    return ind5_bkps_bed.window(ref_bkps_bed, w=100, v=True)
 
-def bed_to_array(bed, size):
-    df=pd.read_csv('removed_artifacts_pred.bed',header=None, sep='\t')
-    col_one_arr = df[1].to_numpy()
-    col_two_arr = df[2].to_numpy()
-    start_stop=np.array([0,size])
-    arr = np.concatenate((col_one_arr, col_two_arr))
-    arr = np.concatenate((arr, start_stop))
-    arr=np.sort(arr)
-    return arr
+def bed_to_array(bed):
+    # df=pd.read_csv('removed_artifacts_pred.bed',header=None, sep='\t')
+    # col_one_arr = df[1].to_numpy()
+    # col_two_arr = df[2].to_numpy()
+    # start_stop=np.array([0,size])
+    # arr = np.concatenate((col_one_arr, col_two_arr))
+    # arr = np.concatenate((arr, start_stop))
+
+    # arr=np.sort(arr)
+
+    return pybedtools.BedTool.to_dataframe(bed).loc[:, ["start", "end"]].to_numpy().flatten()
 
 #Filter and remove artifacts
 def pred_breakpoints(ref_arr, pred_arr, coverage_array, thr):
