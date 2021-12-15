@@ -13,7 +13,13 @@ def calculate_avg_thr(path):
     data=pd.read_csv(path, header=None, sep='\t')
     #Extract the individual sample
     for i in range(len(data.columns)-2):
-        avg_thr.append(3*np.mean(np.array(data[i+2])))
+        curr_array=np.array(data[i+2])
+        curr_array[curr_array > 150] = 150
+        (n, bins, patches)=plt.hist(curr_array, bins=150)
+        max_value=(np.max(n[4:]))
+        max_index = np.where(n == max_value)
+        avg=bins[max_index]
+        avg_thr.append(avg)
     return avg_thr
 
 
@@ -48,7 +54,7 @@ def bed_to_array(bed):
     return pybedtools.BedTool.to_dataframe(bed).loc[:, ["start", "end"]].to_numpy().flatten()
 
 #Calculates and filter the average coverage for every interval
-def filter_coverage(pred_array, coverage_array):
+def filter_coverage_old(pred_array, coverage_array, threshold):
     avg_cov_arr=[]
     pred_filterd=[]
     for i in range(len(pred_array)-1):
@@ -58,7 +64,9 @@ def filter_coverage(pred_array, coverage_array):
         temp=coverage_array[start: stop]
 
         avg_coverage=sum(temp)/len(temp)
-        avg_cov_arr.append(avg_coverage)
+
+        if avg_coverage<threshold:
+            avg_cov_arr.append(avg_coverage)
 
     (n, bins, patches) = plt.hist(avg_cov_arr, bins=25)
     #print("threshold: ")
@@ -71,10 +79,31 @@ def filter_coverage(pred_array, coverage_array):
         start=pred_array[i]
         stop=pred_array[i+1]
 
-        if avg_cov_arr[i]<(bins[1]):
+        if avg_cov_arr[i]<threshold:
             pred_filterd.extend([start, stop])
 
     return pred_filterd, bins[1]
+
+
+def filter_coverage(pred_array, coverage_array, threshold):
+
+    pred_filterd=[]
+    for i in range(len(pred_array)-1):
+        start=pred_array[i]
+        stop=pred_array[i+1]
+
+        temp=coverage_array[start: stop]
+
+        avg_coverage=sum(temp)/len(temp)
+
+        if avg_coverage<threshold:
+            pred_filterd.extend([start, stop])
+
+    return pred_filterd
+
+
+
+
 
 #Creates an info array about the predicted change points
 def create_info_array(bedObject):
@@ -85,11 +114,11 @@ def create_info_array(bedObject):
         max_info=np.max(info)
         avg_info=np.mean(info)
         len_info=len(info)
-        return min_info, max_info, avg_info, len_info
+        (n, bins, patches)=plt.hist(info)
+        return min_info, max_info, avg_info, len_info, n, bins
 
 #Calculates the changepoints
 def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, sample_index='all'):
-
 
     #Read in the data
     data=pd.read_csv(path, header=None, sep='\t')
@@ -103,9 +132,10 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
 
     #Iterate over all references
     for index in ref_index:
-
+        threshold=arr_avg_cov[index-2]*0.35
+        avg_cutoff=arr_avg_cov[index-2]*3
         reference=np.array(data[index])
-        reference[reference > arr_avg_cov[index-2]] = arr_avg_cov[index-2]
+        reference[reference > avg_cutoff] = avg_cutoff
         t0 = time.time()
         algo_ref = rpt.BottomUp(model=model, min_size=min_size).fit(reference)
         ref_bkps = algo_ref.predict(pen=pen_ref)
@@ -113,7 +143,7 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
         #print("Reference "+str(index)+": ")
         #print(t1-t0)
 
-        (filter_array_ref, threshold)=filter_coverage(ref_bkps, reference) #Filter the reference
+        filter_array_ref=filter_coverage(ref_bkps, reference, threshold) #Filter the reference
         #Make plot and save it
         rpt.display(reference, filter_array_ref, figsize=(100, 6))
         plt.title('Reference ' + str(index))
@@ -127,7 +157,9 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
 
         #get info
         ref_bed_1=create_bed_from_array(filter_array_ref, chr_name) #create bed file and save it
-        (min_info, max_info, avg_info, len_info)=create_info_array(ref_bed_1)
+        (min_info, max_info, avg_info, len_info, n, bins)=create_info_array(ref_bed_1)
+        bins=bins[:-1]
+        hist_df = pd.DataFrame({'bin': bins,'no of deletions': n})
 
         #Write to file
         info_file = open("results/info_reference_" + str(index) + ".txt", "w")
@@ -138,7 +170,8 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
         info_file.write("Average artifact: " + str(avg_info)+ "\n")
         info_file.write("Number of artifacts: " + str(len_info)+ "\n")
         info_file.write("Artifact threshold: " + str(threshold)+ "\n")
-        info_file.write("Average coverage * 3 cut off: " + str(arr_avg_cov[index-2]) + "\n")
+        info_file.write("Average coverage * 3 cut off: " + str(avg_cutoff) + "\n")
+        info_file.write("Histogram: \n" + hist_df.to_string())
         info_file.close()
 
     ref_bed=create_bed_from_array(all_ref, chr_name) #create bed file and save it
@@ -151,8 +184,10 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
     for i in sample_index:
 
         if i not in ref_index:
+            threshold=arr_avg_cov[i-2]*0.15
+            avg_cutoff=arr_avg_cov[i-2]*3
             individual=np.array(data[i])
-            individual[individual > arr_avg_cov[i-2] ] = arr_avg_cov[i-2]
+            individual[individual > avg_cutoff] =avg_cutoff
 
             #Fit the data
             t0 = time.time()
@@ -164,10 +199,10 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
             #print("Sample:" + str(i) + ', running time: ')
             #print(t1-t0)
 
-            fig = plt.figure(num = "ruptures_figure", figsize=(100, 10))
+            fig = plt.figure(num = "ruptures_figure" +str(i) , figsize=(100, 10))
             #define grid of nrows x ncols
             gs = fig.add_gridspec(3, 1)
-            _, curr_ax = rpt.display(individual, ind_bkps, num="ruptures_figure")
+            _, curr_ax = rpt.display(individual, ind_bkps, num="ruptures_figure"+ str(i))
 
             curr_ax[0].set_position(gs[0].get_position(fig))
             curr_ax[0].set_subplotspec(gs[0])
@@ -178,9 +213,9 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
             plt.xticks(np.arange(0, len(individual)+1, 10000))
 
             #filter the sample
-            (filter_array, threshold)=filter_coverage(ind_bkps, individual)
+            filter_array=filter_coverage(ind_bkps, individual,threshold)
 
-            _, curr_ax = rpt.display(individual, filter_array,  num="ruptures_figure")
+            _, curr_ax = rpt.display(individual, filter_array,  num="ruptures_figure"+str(i))
             curr_ax[0].set_position(gs[1].get_position(fig))
             curr_ax[0].set_subplotspec(gs[1])
 
@@ -196,7 +231,7 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
 
             rem_pred_filter_arr=bed_to_array(rem_bed) #Remove reference bkps and convert to array.
 
-            _, curr_ax = rpt.display(individual, rem_pred_filter_arr, num="ruptures_figure")
+            _, curr_ax = rpt.display(individual, rem_pred_filter_arr, num="ruptures_figure"+str(i))
             curr_ax[0].set_position(gs[2].get_position(fig))
             curr_ax[0].set_subplotspec(gs[2])
             plt.title('Sample '  + str(i)+ '  After filtration and removal of artifacts')
@@ -205,11 +240,9 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
             plt.xticks(np.arange(0, len(individual)+1, 10000))
             fig.savefig('results/sample_'+ str(i) + '.jpg')
 
-
-            #print("Coverage cutoff: ")
-            #print(arr_avg_cov[i-2])
-
-            (min_info, max_info, avg_info, len_info)=create_info_array(rem_bed)
+            (min_info, max_info, avg_info, len_info, n, bins)=create_info_array(rem_bed)
+            bins=bins[:-1]
+            hist_df = pd.DataFrame({'bin': bins,'no of deletions': n})
 
             #Write to file
             info_file = open("results/info_sample_" + str(i) + ".txt", "w")
@@ -220,9 +253,13 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
             info_file.write("Average deletion: " + str(avg_info)+ "\n")
             info_file.write("Number of deletions: " + str(len_info)+ "\n")
             info_file.write("Deletion threshold: " + str(threshold)+ "\n")
-            info_file.write("Average coverage *3 cut off: " + str(arr_avg_cov[i-2]) + "\n")
+            info_file.write("Average coverage *3 cut off: " + str(avg_cutoff) + "\n")
+            info_file.write("Histogram: \n" + hist_df.to_string())
             info_file.close()
-            print("Sample " + str(i) +  "done.")
+            print("Sample " + str(i) +  " done.")
+
+# sprint(calculate_avg_thr('30mil'))
+
 
 path = argv[1]
 chr_name= argv[2]
