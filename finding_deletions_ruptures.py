@@ -115,6 +115,11 @@ def create_info_array(bedObject):
         avg_info=np.mean(info)
         len_info=len(info)
         (n, bins, patches)=plt.hist(info)
+        plt.xlabel('Size of deletion')
+        plt.ylabel('Number of deletions')
+        plt.title('Identified deletions')
+        plt.show()
+
         return min_info, max_info, avg_info, len_info, n, bins
 
 #Calculates the changepoints
@@ -145,12 +150,13 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
 
         filter_array_ref=filter_coverage(ref_bkps, reference, threshold) #Filter the reference
         #Make plot and save it
-        rpt.display(reference, filter_array_ref, figsize=(100, 6))
+        rpt.display(reference, filter_array_ref, figsize=(100, 15))
         plt.title('Reference ' + str(index))
         plt.xlabel('Position')
         plt.ylabel('Coverage')
-        plt.xticks(np.arange(0, len(reference)+1, 10000))
-        plt.savefig('results/reference_'+ str(index) + '.jpg')
+        plt.xticks(np.arange(0, len(reference)+1, 100000))
+
+        plt.savefig('results/reference_'+ str(index) + '.png')
 
 
         all_ref.extend(filter_array_ref)
@@ -173,6 +179,7 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
         info_file.write("Average coverage * 3 cut off: " + str(avg_cutoff) + "\n")
         info_file.write("Histogram: \n" + hist_df.to_string())
         info_file.close()
+        print("Done with reference " + str(index) + ".")
 
     ref_bed=create_bed_from_array(all_ref, chr_name) #create bed file and save it
     ref_bed_sort=ref_bed.sort().merge().saveas("results/reference.bed")
@@ -199,7 +206,7 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
             #print("Sample:" + str(i) + ', running time: ')
             #print(t1-t0)
 
-            fig = plt.figure(num = "ruptures_figure" +str(i) , figsize=(100, 10))
+            fig = plt.figure(num = "ruptures_figure" +str(i) , figsize=(100, 30))
             #define grid of nrows x ncols
             gs = fig.add_gridspec(3, 1)
             _, curr_ax = rpt.display(individual, ind_bkps, num="ruptures_figure"+ str(i))
@@ -210,7 +217,7 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
             plt.title('Sample '  + str(i)+ ' before filtration and removal of artifacts')
             plt.xlabel('Position')
             plt.ylabel('Coverage')
-            plt.xticks(np.arange(0, len(individual)+1, 10000))
+            plt.xticks(np.arange(0, len(individual)+1, 100000))
 
             #filter the sample
             filter_array=filter_coverage(ind_bkps, individual,threshold)
@@ -222,7 +229,7 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
             plt.title('Sample '  + str(i)+ '  After filtration')
             plt.xlabel('Position')
             plt.ylabel('Coverage')
-            plt.xticks(np.arange(0, len(individual)+1, 10000))
+            plt.xticks(np.arange(0, len(individual)+1, 100000))
 
             pred_filtred_bed=create_bed_from_array(filter_array, chr_name) #create bed file
 
@@ -237,8 +244,9 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
             plt.title('Sample '  + str(i)+ '  After filtration and removal of artifacts')
             plt.xlabel('Position')
             plt.ylabel('Coverage')
-            plt.xticks(np.arange(0, len(individual)+1, 10000))
-            fig.savefig('results/sample_'+ str(i) + '.jpg')
+            plt.xticks(np.arange(0, len(individual)+1, 100000))
+            fig.savefig('results/sample_'+ str(i) + '.png')
+            plt.show()
 
             (min_info, max_info, avg_info, len_info, n, bins)=create_info_array(rem_bed)
             bins=bins[:-1]
@@ -259,8 +267,6 @@ def predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, 
             print("Sample " + str(i) +  " done.")
 
 # sprint(calculate_avg_thr('30mil'))
-
-
 path = argv[1]
 chr_name= argv[2]
 pen_ref=int(argv[3])
@@ -275,5 +281,6 @@ sample_index=(argv[7].split(','))
 map_object = map(int,sample_index)
 sample_index = list(map_object)
 arr_avg_cov=calculate_avg_thr(arr_avg)
+print("Done with avg calculation")
 
 predict_deletions(path, chr_name, pen_ref, pen_ind, arr_avg_cov, ref_index, sample_index)
