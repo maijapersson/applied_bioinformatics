@@ -1,0 +1,7 @@
+This is a file containing information about reference with index 5. 
+Smallest artifact: 615
+Biggest artifact: 159185
+Average artifact: 26013.571428571428
+Number of artifacts: 21
+Artifact threshold: 1.1634976981929588
+Average coverage * 3 cut off: 29.724108700000002

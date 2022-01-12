@@ -1,0 +1,19 @@
+This is a file containing information about sample with index 3. 
+Smallest deletion: 155
+Biggest deletion: 63175
+Average deletion: 8118.211382113821
+Number of deletions: 123
+Deletion threshold: [5.25]
+Average coverage *3 cut off: [105.]
+Histogram: 
+       bin  no of deletions
+0    155.0             75.0
+1   6457.0             27.0
+2  12759.0             13.0
+3  19061.0              1.0
+4  25363.0              1.0
+5  31665.0              1.0
+6  37967.0              0.0
+7  44269.0              2.0
+8  50571.0              2.0
+9  56873.0              1.0

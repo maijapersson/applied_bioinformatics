@@ -1,0 +1,19 @@
+This is a file containing information about sample with index 5. 
+Smallest deletion: 615
+Biggest deletion: 159185
+Average deletion: 27192.083333333332
+Number of deletions: 24
+Deletion threshold: [1.35]
+Average coverage *3 cut off: [27.]
+Histogram: 
+        bin  no of deletions
+0     615.0             15.0
+1   16472.0              3.0
+2   32329.0              1.0
+3   48186.0              2.0
+4   64043.0              1.0
+5   79900.0              1.0
+6   95757.0              0.0
+7  111614.0              0.0
+8  127471.0              0.0
+9  143328.0              1.0

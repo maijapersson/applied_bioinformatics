@@ -1,0 +1,7 @@
+This is a file containg information about reference with index 3. 
+Smallest artifact: 240
+Biggest artifact: 63110
+Average artifact: 9969.848484848484
+Number of artifacts: 33
+Artifact threshold: 5.046325641025641
+Avergae covergae * 3 cut off: 107.63616529999999

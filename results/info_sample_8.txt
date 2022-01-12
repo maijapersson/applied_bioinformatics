@@ -1,0 +1,19 @@
+This is a file containing information about sample with index 8. 
+Smallest deletion: 615
+Biggest deletion: 250245
+Average deletion: 30873.75
+Number of deletions: 24
+Deletion threshold: [1.5]
+Average coverage *3 cut off: [30.]
+Histogram: 
+        bin  no of deletions
+0     615.0             17.0
+1   25578.0              3.0
+2   50541.0              0.0
+3   75504.0              2.0
+4  100467.0              1.0
+5  125430.0              0.0
+6  150393.0              0.0
+7  175356.0              0.0
+8  200319.0              0.0
+9  225282.0              1.0
