@@ -1,0 +1,19 @@
+This is a file containing information about sample with index 11. 
+Smallest deletion: 1220
+Biggest deletion: 241455
+Average deletion: 39486.53846153846
+Number of deletions: 13
+Deletion threshold: [0.9]
+Average coverage *3 cut off: [18.]
+Histogram: 
+        bin  no of deletions
+0    1220.0             11.0
+1   25243.5              0.0
+2   49267.0              0.0
+3   73290.5              0.0
+4   97314.0              0.0
+5  121337.5              1.0
+6  145361.0              0.0
+7  169384.5              0.0
+8  193408.0              0.0
+9  217431.5              1.0

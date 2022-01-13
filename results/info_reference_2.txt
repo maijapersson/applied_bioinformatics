@@ -1,0 +1,19 @@
+This is a file containing information about reference with index 2. 
+Smallest artifact: 150
+Biggest artifact: 11600
+Average artifact: 3366.0
+Number of artifacts: 50
+Artifact threshold: [8.75]
+Average coverage * 3 cut off: [75.]
+Histogram: 
+       bin  no of deletions
+0    150.0             21.0
+1   1295.0              7.0
+2   2440.0              3.0
+3   3585.0              5.0
+4   4730.0              4.0
+5   5875.0              2.0
+6   7020.0              3.0
+7   8165.0              0.0
+8   9310.0              2.0
+9  10455.0              3.0

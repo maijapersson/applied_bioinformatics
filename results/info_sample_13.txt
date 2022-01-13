@@ -1,0 +1,19 @@
+This is a file containing information about sample with index 13. 
+Smallest deletion: 3420
+Biggest deletion: 142460
+Average deletion: 51024.444444444445
+Number of deletions: 18
+Deletion threshold: [1.35]
+Average coverage *3 cut off: [27.]
+Histogram: 
+        bin  no of deletions
+0    3420.0              8.0
+1   17324.0              2.0
+2   31228.0              0.0
+3   45132.0              1.0
+4   59036.0              2.0
+5   72940.0              1.0
+6   86844.0              0.0
+7  100748.0              1.0
+8  114652.0              1.0
+9  128556.0              2.0

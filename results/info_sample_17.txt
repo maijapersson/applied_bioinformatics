@@ -1,0 +1,19 @@
+This is a file containing information about sample with index 17. 
+Smallest deletion: 615
+Biggest deletion: 123045
+Average deletion: 25669.21875
+Number of deletions: 32
+Deletion threshold: [1.2]
+Average coverage *3 cut off: [24.]
+Histogram: 
+        bin  no of deletions
+0     615.0             18.0
+1   12858.0              5.0
+2   25101.0              0.0
+3   37344.0              3.0
+4   49587.0              2.0
+5   61830.0              1.0
+6   74073.0              1.0
+7   86316.0              0.0
+8   98559.0              0.0
+9  110802.0              2.0
