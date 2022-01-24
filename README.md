@@ -1,5 +1,5 @@
 # Project code in course Applied Bioinformatics
-### Authors: Linn Beckman, Maija Persson and Viktor Öhrner
+##### Authors: Linn Beckman, Maija Persson and Viktor Öhrner
 
 ## How to run finding_deletions_ruptures.py
 
