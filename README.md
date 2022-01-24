@@ -6,7 +6,7 @@ Module dependencies: ruptures, pybedtools, pandas, numpy, matplotlib.pyplot, tim
 
 The script requires that a dictionary with the name results is created at the same place as the file finding_deletions_ruptures.py.
 
-**The script is run from the command line by the following command:**
+**The script can run from the command line by the following command:**
 
 > python finding_deletions_ruptures.py path_to_detection_file chr_name pen_ref pen_ind path_to_filtration_file ref_index sample_index
 
