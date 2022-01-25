@@ -31,3 +31,21 @@ The script requires that a dictionary with the name results is created at the sa
 **OUTPUTS:**
 
 All outputs are stored in the results dictionary. The script outputs one bed file with the start and stop positions of the detected deletion/artefacts for each sample or reference. For each sample and reference, a plot with the resulting change points are saved. There is also a text file for each sample and reference containing additional information about the analysis and a plot with all samples and references.
+
+
+## How to run the HMM pipeline
+
+Module dependencies: hmm_learn, scikit-learn, numpy, matplotlib.pyplot, scipy, json, pathlib, ruptures, pybedtools, pandas, collections, sys and argparse, time, pathlib.
+
+**The script can run from the command line by the following command:**
+
+> zcat DATA_PATH/FILE.gz | head -n INT | python createDict.py --samples FILE1.tex --references FILE2.tex | python removeOutliers.py | python hmm.py | python postProces.py
+
+Where FILE1.tex and FILE2.tex have the index of the samples and references on each row.
+
+**EXAMPLE:**
+> zcat DATA_PATH/PA_chr01.depth.gz | head -n 1000000 | python createDict.py --sample sample.tex --reference reference.tex | python removeOutliers.py | python hmm.py | python postProces.py
+
+**OUTPUTs:**
+
+Outputs a .bed files with deletions for each reference and sample.
