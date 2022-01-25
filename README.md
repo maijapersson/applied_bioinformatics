@@ -41,11 +41,12 @@ Module dependencies: hmm_learn, scikit-learn, numpy, matplotlib.pyplot, scipy, j
 
 > zcat DATA_PATH/FILE.gz | head -n INT | python createDict.py --samples FILE1.tex --references FILE2.tex | python removeOutliers.py | python hmm.py | python postProces.py
 
-Where FILE1.tex and FILE2.tex have the index of the samples and references on each row.
+Where FILE1.tex and FILE2.tex have the index of the samples and references on each row. These .py files can be found in the folder ./HMMlearn with examples of FILE1.tex and FILE2.tex.
 
 **EXAMPLE:**
+
 > zcat DATA_PATH/PA_chr01.depth.gz | head -n 1000000 | python createDict.py --sample sample.tex --reference reference.tex | python removeOutliers.py | python hmm.py | python postProces.py
 
 **OUTPUTs:**
 
-Outputs a .bed files with deletions for each reference and sample.
+Outputs a .bed file with deletions for each reference and sample. A plot with deletions and coverage can be generated as well. 
